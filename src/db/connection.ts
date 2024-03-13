@@ -5,13 +5,13 @@ import "reflect-metadata";
 
 export const db = new DataSource({
     "type": "postgres",
-    "host": "host.docker.internal", // Use localhost for local connection and keep same for docker conn
+    "host": "localhost", // "host.docker.internal" - Use for docker image build and run
     "port": 5432,
     "username": "postgres",
     "password": "science98",
     "database": "grocerydb",
     "synchronize": true,
-    "entities": ["dist/entity/**/*.js"]
+    "entities": ["src/entity/**/*.ts"] // ["dist/entity/**/*.js"] - Use for docker image build and run
   } as PostgresConnectionOptions);
 
 export class Database {

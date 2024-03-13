@@ -12,6 +12,7 @@ export class ItemController {
     this.getAllItems = this.getAllItems.bind(this);
     this.removeItem = this.removeItem.bind(this);
     this.updateItem = this.updateItem.bind(this);
+    this.patchItem = this.patchItem.bind(this);
   }
 
   @AuthMiddleware([Role.ADMIN])
@@ -78,6 +79,18 @@ export class ItemController {
       res.json(updatedItem);
     } catch (error) {
       res.status(400).json({ message: 'Error updating grocery item details' });
+    }
+  }
+
+  @AuthMiddleware([Role.ADMIN])
+   async patchItem(req: Request, res: Response) {
+    const patchItem = req.body;
+    try {
+      const updatedItem = await this.itemService.updateItemInventory(patchItem);
+      res.json(updatedItem);
+    } catch (error) {
+      res.status(400).json({ message: 'Error updating grocery item details' });
+      console.log(error);
     }
   }
 }

@@ -15,6 +15,7 @@ export function registerRoutes(router: Router) {
     router.post('/api/items', itemController.addItems);
     router.delete('/api/item', itemController.removeItem);
     router.put('/api/item', itemController.updateItem);
+    router.patch('/api/item', itemController.patchItem);
 
     router.post('/api/order', orderController.createOrder);
 }

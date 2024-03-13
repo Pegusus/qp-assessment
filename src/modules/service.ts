@@ -34,14 +34,12 @@ export class ItemService {
     async updateItem(updateItem: Item): Promise<Item> {
         try {
             const itemObject = await this.itemRepository.findOneByOrFail({id: updateItem.id})
-            const { name, price, description, category, quantity_available, available } = updateItem; 
+            const { name, price, description, category } = updateItem; 
 
             itemObject.name = name;
             itemObject.price = price;
             itemObject.description = description;
             itemObject.category = category;
-            itemObject.quantity_available = quantity_available;
-            itemObject.available = available;
 
             await this.itemRepository.save(itemObject);
 
@@ -54,6 +52,27 @@ export class ItemService {
                 throw new Error('Unknown Error occurred');
             }
         }
+    }
+
+        async updateItemInventory(patchItem: Item): Promise<Item> {
+            try {
+                const itemObject = await this.itemRepository.findOneByOrFail({id: patchItem.id})
+                const { quantity_available, available } = patchItem; 
+    
+                itemObject.quantity_available = quantity_available;
+                itemObject.available = available;
+    
+                await this.itemRepository.save(itemObject);
+    
+                const getItem = await this.itemRepository.findOneByOrFail({id: patchItem.id})
+                return getItem;
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    throw new Error(error.message)
+                } else {
+                    throw new Error('Unknown Error occurred');
+                }
+            }
     }
         
 }
