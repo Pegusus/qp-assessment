@@ -17,13 +17,11 @@ export class UserService {
             if (!user) {
                 return null;
             }
-            console.log(user)
             
             const isValidPassword = await bcrypt.compare(password, user.password);
             if (!isValidPassword) {
                 return null;
             }
-            console.log(isValidPassword)
 
             return user;
         } catch (error) {
