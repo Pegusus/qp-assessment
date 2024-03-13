@@ -1,20 +1,27 @@
 import { Request, Response } from 'express';
 import { ItemService } from './service';
+import { AuthMiddleware } from './middlewares/auth-middleware';
+import Role from './constants';
 
 export class ItemController {
   private itemService: ItemService;
 
   constructor() {
     this.itemService = new ItemService();
+    this.addItems = this.addItems.bind(this);
+    this.getAllItems = this.getAllItems.bind(this);
+    this.removeItem = this.removeItem.bind(this);
+    this.updateItem = this.updateItem.bind(this);
   }
 
-  addItems = async (req: Request, res: Response) => {
+  @AuthMiddleware([Role.ADMIN])
+  async addItems(req: Request, res: Response){
     try {
       if (!Array.isArray(req.body)) {
         return res.status(400).json({ message: "Expected an array of items" });
       }
       const newItems = await this.itemService.addItems(req.body);
-      res.status(201).json(newItems);
+      return res.status(201).json(newItems);
     } catch (error: unknown) {
         if (error instanceof Error) {
             res.status(500).json({ message: error.message });
@@ -24,7 +31,8 @@ export class ItemController {
     }
   };
 
-  getAllItems = async (req: Request, res: Response) => {
+  @AuthMiddleware([Role.ADMIN, Role.USER])
+  async getAllItems(req: Request, res: Response){
     try {
         const page: number = parseInt(req.query.page as string) || 1;
         const pageSize: number = parseInt(req.query.pageSize as string) || 10;
@@ -47,7 +55,8 @@ export class ItemController {
     }
 };
 
-removeItem = async (req: Request, res: Response) => {
+@AuthMiddleware([Role.ADMIN])
+ async removeItem(req: Request, res: Response) {
     const itemId = parseInt(req.query.id as string);
     if (!itemId) {
         return res.status(400).json({ message: "Expected item id" });
@@ -61,7 +70,8 @@ removeItem = async (req: Request, res: Response) => {
     }
   };
 
-  updateItem = async (req: Request, res: Response) => {
+  @AuthMiddleware([Role.ADMIN])
+   async updateItem(req: Request, res: Response) {
     const updateItem = req.body;
     try {
       const updatedItem = await this.itemService.updateItem(updateItem);

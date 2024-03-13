@@ -8,7 +8,7 @@ export class ItemService {
     constructor() {
         this.itemRepository = db.getRepository(Item);
     }
-    async addItems(itemDataArray: Partial<Item>[]): Promise<void> {
+    async addItems(itemDataArray: Item[]): Promise<void> {
         const newItems = this.itemRepository.create(itemDataArray);
         await this.itemRepository.save(newItems);
     }
