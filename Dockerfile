@@ -23,10 +23,13 @@ FROM node:alpine
 WORKDIR /app
 
 # Copy the built files from the builder stage 
-COPY --from=builder /app/dist/src ./dist/src
+COPY --from=builder /app/dist/ ./dist
+COPY --from=builder /app/node_modules ./node_modules
+
+# RUN npm install
 
 # Expose the port your application listens on (replace 3000 with your actual port)
 EXPOSE 3000
 
 # Start the application (replace "start" with your actual start command)
-CMD [ "node", "dist/src/server.js" ]
+CMD [ "node", "dist/server.js" ]
