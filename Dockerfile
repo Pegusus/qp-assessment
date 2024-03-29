@@ -1,35 +1,22 @@
-# Use a lightweight Node.js image
-FROM node:alpine AS builder
+# Use official Node.js image as the base image
+FROM node:latest
 
-# Set working directory
+# Set working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json (or yarn.lock)
+# Copy package.json and package-lock.json (if exists) to the working directory
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy your source code
+RUN npm install bcryptjs --save
+
+# Copy the rest of the application code
 COPY . .
 
-# Build your TypeScript code (adjust based on your build process)
-RUN npm run build
-
-# Create a new image for serving the application
-FROM node:alpine
-
-# Set working directory
-WORKDIR /app
-
-# Copy the built files from the builder stage 
-COPY --from=builder /app/dist/ ./dist
-COPY --from=builder /app/node_modules ./node_modules
-
-# RUN npm install
-
-# Expose the port your application listens on (replace 3000 with your actual port)
+# Expose port 3000 to the outside world
 EXPOSE 3000
 
-# Start the application (replace "start" with your actual start command)
-CMD [ "node", "dist/server.js" ]
+# Command to run your NestJS application
+CMD ["npm", "run", "dev"]
